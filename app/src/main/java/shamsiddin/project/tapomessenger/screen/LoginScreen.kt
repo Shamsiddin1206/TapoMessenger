@@ -17,11 +17,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MailOutline
+import androidx.compose.material.icons.materialIcon
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +39,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -65,69 +73,147 @@ fun LoginView(){
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(12.dp, 20.dp, 12.dp, 10.dp)) {
-        Column (Modifier.weight(1f)){
-           Text(text = "Hi, Welcome Back!\uD83D\uDC4B", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black)
-           Spacer(modifier = Modifier.height(3.dp))
-           Text(text = "You have been missed!", fontSize = 15.sp, fontStyle = FontStyle.Italic, color = Color.Gray)
+            .padding(15.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(painter = painterResource(id = R.drawable.logo), contentDescription = "logo", modifier = Modifier
+            .size(150.dp)
+            .weight(1f))
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f)) {
+            Text(text = "Welcome back", fontWeight = FontWeight.Bold, fontSize = 20.sp, color = Color(android.graphics.Color.parseColor("#33BDE6")))
+            Spacer(modifier = Modifier.height(10.dp))
 
-            SignInLottie(
+            OutlinedTextField(
+                value = username,
+                onValueChange = {username = it},
+                label = { Text(text = "Email Address")},
                 modifier = Modifier
                     .fillMaxWidth()
-                    .size(350.dp)
+                    .height(60.dp),
+                maxLines = 1,
+                leadingIcon = { Icon(Icons.Outlined.Email, contentDescription = "")}
             )
-       }
+            Spacer(modifier = Modifier.height(5.dp))
+            OutlinedTextField(
+                value = password,
+                onValueChange = {password = it},
+                label = { Text(text = "Password")},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
+                maxLines = 1,
+                leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = "")}
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(text = "Forgot password?", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End, fontWeight = FontWeight.Bold, color = Color(android.graphics.Color.parseColor("#33BDE6")))
 
-        Column(Modifier.fillMaxWidth()) {
-                OutlinedTextField(
-                    value = username,
-                    onValueChange = {username = it},
-                    label = { Text(text = "Email Address")},
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(60.dp),
-                    maxLines = 1
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = {password = it},
-                    label = { Text(text = "Password")},
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(60.dp),
-                    maxLines = 1
-                )
-                Spacer(modifier = Modifier.height(5.dp))
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(
-                        checked = rememberStatus.value,
-                        onCheckedChange = {rememberStatus.value = it},
-                        colors = CheckboxDefaults.colors(checkedColor = Color(android.graphics.Color.parseColor("#33BDE6")), checkmarkColor = Color.White)
-                    )
-                    Spacer(modifier = Modifier.width(1.dp))
-                    Text(text = "Remember Me")
 
-                    Text(text = "Forgot password", textAlign = TextAlign.End, modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 0.dp, 7.dp, 0.dp), color = Color.Red, fontWeight = FontWeight.Medium)
-                }
-            Spacer(modifier = Modifier.height(50.dp))
-            
         }
-        Button(
-            onClick = { /*TODO*/ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(55.dp),
-            shape = RoundedCornerShape(5.dp),
-            colors = ButtonDefaults.buttonColors(Color(android.graphics.Color.parseColor("#33BDE6"))),
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f)
         ) {
-            Text(text = "Login", color = Color.White, fontSize = 16.sp)
+            Button(onClick = { /*TODO*/ },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(Color(android.graphics.Color.parseColor("#33BDE6"))),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(text = "Login", color = Color.White, fontSize = 17.sp)
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Row(Modifier.fillMaxWidth()) {
+//                Box(modifier = Modifier.height(3.dp).background(Color.Gray))
+                Text(text = "OR", color = Color.Gray, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Button(onClick = { /*TODO*/ },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(Color.LightGray),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                    Icon(painter = painterResource(id = R.drawable.google_ic), contentDescription = "")
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(text = "Login with Google", color = Color.Gray, fontSize = 17.sp)
+                }
+            }
         }
-
-
     }
+
+//    Column(
+//        verticalArrangement = Arrangement.SpaceBetween,
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(Color.White)
+//            .padding(12.dp, 20.dp, 12.dp, 10.dp)) {
+//        Column (Modifier.weight(1f)){
+//           Text(text = "Hi, Welcome Back!\uD83D\uDC4B", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+//           Spacer(modifier = Modifier.height(3.dp))
+//           Text(text = "You have been missed!", fontSize = 15.sp, fontStyle = FontStyle.Italic, color = Color.Gray)
+//
+//            SignInLottie(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .size(350.dp)
+//            )
+//       }
+//
+//        Column(Modifier.fillMaxWidth()) {
+//                OutlinedTextField(
+//                    value = username,
+//                    onValueChange = {username = it},
+//                    label = { Text(text = "Email Address")},
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(60.dp),
+//                    maxLines = 1
+//                )
+//                Spacer(modifier = Modifier.height(10.dp))
+//                OutlinedTextField(
+//                    value = password,
+//                    onValueChange = {password = it},
+//                    label = { Text(text = "Password")},
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(60.dp),
+//                    maxLines = 1
+//                )
+//                Spacer(modifier = Modifier.height(5.dp))
+//                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+//                    Checkbox(
+//                        checked = rememberStatus.value,
+//                        onCheckedChange = {rememberStatus.value = it},
+//                        colors = CheckboxDefaults.colors(checkedColor = Color(android.graphics.Color.parseColor("#33BDE6")), checkmarkColor = Color.White)
+//                    )
+//                    Spacer(modifier = Modifier.width(1.dp))
+//                    Text(text = "Remember Me")
+//
+//                    Text(text = "Forgot password", textAlign = TextAlign.End, modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(0.dp, 0.dp, 7.dp, 0.dp), color = Color.Red, fontWeight = FontWeight.Medium)
+//                }
+//            Spacer(modifier = Modifier.height(50.dp))
+//
+//        }
+//        Button(
+//            onClick = { /*TODO*/ },
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(55.dp),
+//            shape = RoundedCornerShape(5.dp),
+//            colors = ButtonDefaults.buttonColors(Color(android.graphics.Color.parseColor("#33BDE6"))),
+//        ) {
+//            Text(text = "Login", color = Color.White, fontSize = 16.sp)
+//        }
+//
+//
+//    }
 }
 
 @Composable
