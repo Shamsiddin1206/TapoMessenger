@@ -138,8 +138,8 @@ fun LoginView(){
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                    Icon(painter = painterResource(id = R.drawable.google_ic), contentDescription = "")
-                    Spacer(modifier = Modifier.width(5.dp))
+                    Image(painter = painterResource(id = R.drawable.google_ic), contentDescription = "")
+                    Spacer(modifier = Modifier.width(10.dp))
                     Text(text = "Login with Google", color = Color.Gray, fontSize = 17.sp)
                 }
             }
