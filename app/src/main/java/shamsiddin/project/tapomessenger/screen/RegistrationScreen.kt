@@ -2,6 +2,7 @@ package shamsiddin.project.tapomessenger.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
@@ -41,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import shamsiddin.project.tapomessenger.R
+import shamsiddin.project.tapomessenger.navigation.ScreenType
 
 @Composable
 fun RegistrationScreen(navController: NavController){
@@ -69,7 +72,9 @@ fun RegistrationView(navController: NavController){
 
         Column(modifier = Modifier
             .fillMaxWidth()
-            .weight(1f)) {
+            .weight(1.5f)
+            .wrapContentHeight()
+        ) {
             Text(text = "Create an Account", fontWeight = FontWeight.Bold, fontSize = 25.sp, color = Color(android.graphics.Color.parseColor("#33BDE6")))
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -116,13 +121,13 @@ fun RegistrationView(navController: NavController){
                 maxLines = 1,
                 leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = "")}
             )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(text = "Forgot password?", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End, fontWeight = FontWeight.Bold, color = Color(android.graphics.Color.parseColor("#33BDE6")))
         }
 
         Column(modifier = Modifier
             .fillMaxWidth()
-            .weight(1f)
+            .weight(1f),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(onClick = { /*TODO*/ },
                 modifier = Modifier
@@ -134,23 +139,18 @@ fun RegistrationView(navController: NavController){
                 Text(text = "Login", color = Color.White, fontSize = 17.sp)
             }
             Spacer(modifier = Modifier.height(10.dp))
-            Row(Modifier.fillMaxWidth()) {
-//                Box(modifier = Modifier.height(3.dp).background(Color.Gray))
-                Text(text = "OR", color = Color.Gray, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Button(onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(Color.LightGray),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                    Image(painter = painterResource(id = R.drawable.google_ic), contentDescription = "")
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = "Login with Google", color = Color.Gray, fontSize = 17.sp)
-                }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "Already have an account?", color = Color.Gray, fontSize = 15.sp)
+                Spacer(modifier = Modifier.width(5.dp))
+                Text(
+                    text = "Sign In",
+                    color = Color.Black,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable {
+                        navController.navigate(ScreenType.Registration.route)
+                    }
+                )
             }
         }
     }

@@ -2,6 +2,7 @@ package shamsiddin.project.tapomessenger.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,21 +50,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import shamsiddin.project.tapomessenger.R
+import shamsiddin.project.tapomessenger.navigation.ScreenType
 
 @Composable
 fun LoginScreen(navController: NavController){
-    LoginView()
+    LoginView(rememberNavController())
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginView(){
+fun LoginView(navController: NavController){
     var username by remember{ mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var rememberStatus = remember { mutableStateOf(false) }
@@ -113,7 +116,8 @@ fun LoginView(){
         }
         Column(modifier = Modifier
             .fillMaxWidth()
-            .weight(1f)
+            .weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(onClick = { /*TODO*/ },
                 modifier = Modifier
@@ -125,23 +129,18 @@ fun LoginView(){
                 Text(text = "Login", color = Color.White, fontSize = 17.sp)
             }
             Spacer(modifier = Modifier.height(10.dp))
-            Row(Modifier.fillMaxWidth()) {
-//                Box(modifier = Modifier.height(3.dp).background(Color.Gray))
-                Text(text = "OR", color = Color.Gray, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Button(onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(Color.LightGray),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                    Image(painter = painterResource(id = R.drawable.google_ic), contentDescription = "")
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = "Login with Google", color = Color.Gray, fontSize = 17.sp)
-                }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "Have not registered yet?", color = Color.Gray, fontSize = 15.sp)
+                Spacer(modifier = Modifier.width(5.dp))
+                Text(
+                    text = "Sign Up",
+                    color = Color.Black,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable {
+                        navController.navigate(ScreenType.Registration.route)
+                    }
+                )
             }
         }
     }
@@ -241,5 +240,5 @@ fun SignInLottie(modifier: Modifier){
 @Composable
 @Preview
 fun LoginPreview(){
-    LoginView()
+    LoginView(rememberNavController())
 }
