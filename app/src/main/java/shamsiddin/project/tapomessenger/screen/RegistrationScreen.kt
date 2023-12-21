@@ -1,5 +1,8 @@
 package shamsiddin.project.tapomessenger.screen
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,20 +47,28 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import shamsiddin.project.tapomessenger.R
+import shamsiddin.project.tapomessenger.model.User
 import shamsiddin.project.tapomessenger.navigation.ScreenType
+import shamsiddin.project.tapomessenger.utils.Firebase
 
 @Composable
 fun RegistrationScreen(navController: NavController){
-    RegistrationView(navController = rememberNavController())
+    RegistrationView(navController = rememberNavController(), LocalContext.current)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegistrationView(navController: NavController){
+fun RegistrationView(navController: NavController, context: Context){
+    val firebase = Firebase
+
     var username by remember{ mutableStateOf("") }
     var password by remember{ mutableStateOf("") }
     var email by remember{ mutableStateOf("") }
     var name by remember { mutableStateOf("") }
+
+    var nameError by remember {
+        mutableStateOf(false)
+    }
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -80,7 +92,16 @@ fun RegistrationView(navController: NavController){
 
             OutlinedTextField(
                 value = name,
-                onValueChange = {name = it},
+                onValueChange = {
+                    name = it.trim()
+                    if (it.length < 6){
+                        nameError = true
+                    } },
+                isError = name.length >= 6,
+                supportingText = {
+                    if (nameError){
+                        Text(text = "Limit $name/${6}", color = Color.Red, modifier = Modifier.fillMaxWidth())
+                    } },
                 label = { Text(text = "Full name") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -91,7 +112,7 @@ fun RegistrationView(navController: NavController){
             Spacer(modifier = Modifier.height(5.dp))
             OutlinedTextField(
                 value = email,
-                onValueChange = {email = it},
+                onValueChange = {email = it.trim()},
                 label = { Text(text = "Email Address") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -102,7 +123,7 @@ fun RegistrationView(navController: NavController){
             Spacer(modifier = Modifier.height(5.dp))
             OutlinedTextField(
                 value = username,
-                onValueChange = {username = it},
+                onValueChange = {username = it.trim()},
                 label = { Text(text = "Username") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -113,7 +134,7 @@ fun RegistrationView(navController: NavController){
             Spacer(modifier = Modifier.height(5.dp))
             OutlinedTextField(
                 value = password,
-                onValueChange = {password = it},
+                onValueChange = {password = it.trim()},
                 label = { Text(text = "Password")},
                 modifier = Modifier
                     .fillMaxWidth()
@@ -129,14 +150,33 @@ fun RegistrationView(navController: NavController){
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(onClick = { /*TODO*/ },
+            Button(
+                onClick = {
+                    if (username.isNotEmpty() && password.isNotEmpty() && name.isNotEmpty() && email.isNotEmpty()){
+                        firebase.checkUsername(username){similarity ->
+                            if (similarity){
+                                firebase.signup(User(username = username, fullName = name, email = email, password = password, image = "", key = ""), context){
+                                    if (it){
+                                        Toast.makeText(context, "Successfully registered", Toast.LENGTH_SHORT).show()
+                                        navController.navigate(ScreenType.Chats.route)
+                                    }else{
+                                        Log.d("Sign Up failed", "failed")
+                                    }
+                                }
+                            }else{
+                                Log.d("Similarity", "true")
+                            }
+
+                        }
+                    } },
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(Color(android.graphics.Color.parseColor("#33BDE6"))),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text(text = "Login", color = Color.White, fontSize = 17.sp)
+                Text(text = "Sign Up", color = Color.White, fontSize = 17.sp)
             }
             Spacer(modifier = Modifier.height(10.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -156,8 +196,9 @@ fun RegistrationView(navController: NavController){
     }
 }
 
+
 @Composable
 @Preview
 fun RegistrationPreview(){
-    RegistrationView(navController = rememberNavController())
+    RegistrationView(navController = rememberNavController(), LocalContext.current)
 }

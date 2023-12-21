@@ -1,5 +1,7 @@
 package shamsiddin.project.tapomessenger.screen
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
@@ -58,18 +61,22 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import shamsiddin.project.tapomessenger.R
 import shamsiddin.project.tapomessenger.navigation.ScreenType
+import shamsiddin.project.tapomessenger.utils.Firebase
 
 @Composable
 fun LoginScreen(navController: NavController){
-    LoginView(rememberNavController())
+    LoginView(rememberNavController(), LocalContext.current)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginView(navController: NavController){
+fun LoginView(navController: NavController, context: Context){
+    val firebase = Firebase
+
     var username by remember{ mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var rememberStatus = remember { mutableStateOf(false) }
+
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -119,7 +126,14 @@ fun LoginView(navController: NavController){
             .weight(1f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(onClick = { /*TODO*/ },
+            Button(onClick = {
+                if (username.isNotEmpty() && password.isNotEmpty()){
+                    firebase.signIn(username = username, password = password, context = context){
+                        if (it){
+                            Log.d("login", "LoginView: successful")
+                        }
+                    }
+                } },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
@@ -240,5 +254,5 @@ fun SignInLottie(modifier: Modifier){
 @Composable
 @Preview
 fun LoginPreview(){
-    LoginView(rememberNavController())
+    LoginView(rememberNavController(), LocalContext.current)
 }
