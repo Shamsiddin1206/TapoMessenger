@@ -14,9 +14,13 @@ class Firebase private constructor(){
         private val users = FirebaseDatabase.getInstance().reference.child("users")
 
         fun signup(user: User, context: Context, callback: (Boolean) -> Unit){
+            val sharedPreferences = SharedPreferences.getInstance(context)
+            val mutableList = mutableListOf<User>()
             val key = users.push().key.toString()
             user.key = key
             users.child(key).setValue(user)
+            mutableList.add(user)
+            sharedPreferences.setUser(mutableList)
             callback(true)
         }
 
@@ -46,11 +50,15 @@ class Firebase private constructor(){
 
 
         fun signIn(username: String, password: String, context: Context, callback: (Boolean) -> Unit){
+            val sharedPreferences = SharedPreferences.getInstance(context)
+            val mutableList = mutableListOf<User>()
             users.addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(p0: DataSnapshot) {
                     p0.children.forEach {
                         val user = it.getValue(User::class.java)
                         if (username == user!!.username && password == user.password){
+                            mutableList.add(user)
+                            sharedPreferences.setUser(mutableList)
                             Toast.makeText(context, "Successful", Toast.LENGTH_SHORT).show()
                             callback(true)
                             return

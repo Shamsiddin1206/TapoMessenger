@@ -50,6 +50,7 @@ import shamsiddin.project.tapomessenger.R
 import shamsiddin.project.tapomessenger.model.User
 import shamsiddin.project.tapomessenger.navigation.ScreenType
 import shamsiddin.project.tapomessenger.utils.Firebase
+import shamsiddin.project.tapomessenger.utils.SharedPreferences
 
 @Composable
 fun RegistrationScreen(navController: NavController){

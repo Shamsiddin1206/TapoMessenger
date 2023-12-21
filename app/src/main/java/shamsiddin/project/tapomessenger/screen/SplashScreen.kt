@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,10 +25,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 import shamsiddin.project.tapomessenger.R
+import shamsiddin.project.tapomessenger.model.User
 import shamsiddin.project.tapomessenger.navigation.ScreenType
+import shamsiddin.project.tapomessenger.utils.SharedPreferences
 
 @Composable
 fun SplashScreen(navController: NavController){
+    val sharedPreferences = SharedPreferences.getInstance(LocalContext.current)
     var startAnimation by remember{ mutableStateOf(false)}
     val alphaAnimation = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
@@ -39,7 +43,11 @@ fun SplashScreen(navController: NavController){
         startAnimation = true
         delay(4000)
         navController.popBackStack()
-        navController.navigate(ScreenType.Registration.route)
+        if (sharedPreferences.getUser().isEmpty()){
+            navController.navigate(ScreenType.Registration.route)
+        }else{
+            navController.navigate(ScreenType.Chats.route)
+        }
     }
     SplashView(alpha = alphaAnimation.value)
 }
