@@ -53,7 +53,7 @@ import shamsiddin.project.tapomessenger.utils.Firebase
 
 @Composable
 fun RegistrationScreen(navController: NavController){
-    RegistrationView(navController = rememberNavController(), LocalContext.current)
+    RegistrationView(navController = navController, LocalContext.current)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -188,7 +188,7 @@ fun RegistrationView(navController: NavController, context: Context){
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable {
-                        navController.navigate(ScreenType.Registration.route)
+                        navController.navigate(ScreenType.Login.route)
                     }
                 )
             }

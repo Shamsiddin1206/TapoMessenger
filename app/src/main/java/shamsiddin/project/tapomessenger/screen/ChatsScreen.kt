@@ -34,7 +34,7 @@ import shamsiddin.project.tapomessenger.R
 
 @Composable
 fun ChatsScreen(navController: NavController){
-    ChatsView(navController = rememberNavController())
+    ChatsView(navController = navController)
 }
 @Composable
 fun ChatsView(navController: NavController){

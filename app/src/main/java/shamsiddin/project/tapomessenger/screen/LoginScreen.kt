@@ -65,7 +65,7 @@ import shamsiddin.project.tapomessenger.utils.Firebase
 
 @Composable
 fun LoginScreen(navController: NavController){
-    LoginView(rememberNavController(), LocalContext.current)
+    LoginView(navController, LocalContext.current)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -130,7 +130,7 @@ fun LoginView(navController: NavController, context: Context){
                 if (username.isNotEmpty() && password.isNotEmpty()){
                     firebase.signIn(username = username, password = password, context = context){
                         if (it){
-                            Log.d("login", "LoginView: successful")
+                            navController.navigate(ScreenType.Chats.route)
                         }
                     }
                 } },
