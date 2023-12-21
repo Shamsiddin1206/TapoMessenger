@@ -75,5 +75,22 @@ class Firebase private constructor(){
             })
         }
 
+        fun getAllUsers(callback: (MutableList<User>) -> Unit){
+            users.addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val mutableList = mutableListOf<User>()
+                    snapshot.children.forEach {
+                        mutableList.add(it.getValue(User::class.java)!!)
+                    }
+                    callback(mutableList)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("getAllUsers", "$error")
+                }
+
+            })
+        }
+
     }
 }
