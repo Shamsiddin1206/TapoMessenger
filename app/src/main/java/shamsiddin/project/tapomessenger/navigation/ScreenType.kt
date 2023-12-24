@@ -5,4 +5,5 @@ sealed class ScreenType(val route: String){
     object Registration: ScreenType("registration_screen")
     object Login: ScreenType("login_screen")
     object Chats: ScreenType("chats_screen")
+    object Contacts: ScreenType("contacts_screen")
 }

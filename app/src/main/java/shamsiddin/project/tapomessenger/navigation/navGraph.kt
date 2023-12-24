@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import shamsiddin.project.tapomessenger.screen.ChatsScreen
+import shamsiddin.project.tapomessenger.screen.ContactsScreen
 import shamsiddin.project.tapomessenger.screen.LoginScreen
 import shamsiddin.project.tapomessenger.screen.RegistrationScreen
 import shamsiddin.project.tapomessenger.screen.SplashScreen
@@ -25,6 +26,9 @@ fun SetNavGraph(navController: NavHostController){
         }
         composable(ScreenType.Chats.route){
             ChatsScreen(navController = navController)
+        }
+        composable(ScreenType.Contacts.route){
+            ContactsScreen(navController = navController)
         }
     }
 }

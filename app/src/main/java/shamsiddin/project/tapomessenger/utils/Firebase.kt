@@ -7,6 +7,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import shamsiddin.project.tapomessenger.model.Messages
 import shamsiddin.project.tapomessenger.model.User
 
 class Firebase private constructor(){
@@ -87,6 +88,39 @@ class Firebase private constructor(){
 
                 override fun onCancelled(error: DatabaseError) {
                     Log.d("getAllUsers", "$error")
+                }
+
+            })
+        }
+
+        fun getChats(key: String, callback: (users: MutableList<User>, lastMessage: MutableList<Messages>) -> Unit){
+            val userMessages = users.child(key).child("messages")
+            userMessages.addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val allMessages = mutableListOf<Messages>()
+                    val allUsers = mutableListOf<User>()
+                    val lastMessage = mutableListOf<Messages>()
+                    val allKeys = mutableListOf<String>()
+                    snapshot.children.forEach {
+                        val message = it.getValue(Messages::class.java)
+                        allMessages.add(message!!)
+                    }
+                    if (allMessages.isEmpty()) callback(allUsers, lastMessage)
+                    allMessages.sortByDescending { it.date }
+                    allMessages.forEach {
+                        val userKey = if (it.from == key) it.to else it.from
+                        if (!allKeys.contains(it.key)){
+                            allKeys.add(userKey!!)
+                            lastMessage.add(it)
+                        }
+                    }
+                    allKeys.forEach {
+
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("getChats", "onCancelled: $error")
                 }
 
             })

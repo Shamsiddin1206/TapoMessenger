@@ -52,7 +52,7 @@ android {
 
 dependencies {
 
-    implementation("androidx.navigation:navigation-compose:2.7.6")
+    implementation("androidx.navigation:navigation-compose:2.7.5")
     implementation("com.airbnb.android:lottie-compose:4.0.0")
     implementation ("com.google.code.gson:gson:2.9.0")
 
@@ -64,6 +64,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3:1.1.2")
     implementation("com.google.firebase:firebase-firestore:24.10.0")
     implementation("com.google.firebase:firebase-database:20.3.0")
 

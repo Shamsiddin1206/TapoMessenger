@@ -2,6 +2,7 @@ package shamsiddin.project.tapomessenger.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import shamsiddin.project.tapomessenger.R
+import shamsiddin.project.tapomessenger.navigation.ScreenType
 
 @Composable
 fun ChatsScreen(navController: NavController){
@@ -52,10 +54,20 @@ fun ChatsView(navController: NavController){
                 .background(Color(android.graphics.Color.parseColor("#33BDE6"))),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(modifier = Modifier.width(10.dp))
-            Image(painter = painterResource(id = R.drawable.menu_ic), contentDescription = "", modifier = Modifier.size(35.dp))
-            Text(text = "TapoMessenger", color = Color.White, fontSize = 17.sp, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
-        }
+            Row(modifier = Modifier.weight(0.5f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start) {
+                Spacer(modifier = Modifier.width(10.dp))
+                Image(painter = painterResource(id = R.drawable.menu_ic), contentDescription = "", modifier = Modifier.size(35.dp))
+            }
+            Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                Text(text = "TapoMessenger", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+            }
+            Row(modifier = Modifier.weight(0.5f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End) {
+                Image(painter = painterResource(id = R.drawable.search_ic), contentDescription = "", modifier = Modifier.clickable { navController.navigate(ScreenType.Contacts.route) })
+                Spacer(modifier = Modifier.width(10.dp))
+            }
+
+
+            }
         Spacer(modifier = Modifier.height(10.dp))
         val arr = mutableListOf<Int>(R.drawable.personprofile_example,R.drawable.personprofile_example,R.drawable.personprofile_example,R.drawable.personprofile_example,R.drawable.personprofile_example,R.drawable.personprofile_example,R.drawable.personprofile_example)
         LazyColumn(modifier = Modifier){
@@ -88,9 +100,13 @@ fun ChatItem(int: Int){
         )
         Spacer(modifier = Modifier.width(5.dp))
         Column(verticalArrangement = Arrangement.Center) {
-            Text(text = "Dilmurod Yo'ldoshev", color = Color.Black, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth().padding(5.dp, 0.dp, 20.dp, 0.dp))
+            Text(text = "Dilmurod Yo'ldoshev", color = Color.Black, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp, 0.dp, 20.dp, 0.dp))
             Spacer(modifier = Modifier.height(5.dp))
-            Text(text = "Manga shu ishlarni qilib ber", color = Color.Gray, modifier = Modifier.fillMaxWidth().padding(5.dp, 0.dp, 20.dp, 0.dp), fontSize = 16.sp, maxLines = 1)
+            Text(text = "Manga shu ishlarni qilib ber", color = Color.Gray, modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp, 0.dp, 20.dp, 0.dp), fontSize = 16.sp, maxLines = 1)
         }
     }
 }
