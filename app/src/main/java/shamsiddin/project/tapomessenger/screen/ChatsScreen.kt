@@ -1,5 +1,7 @@
 package shamsiddin.project.tapomessenger.screen
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,11 +22,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,15 +38,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.firestore.auth.User
 import shamsiddin.project.tapomessenger.R
+import shamsiddin.project.tapomessenger.model.Messages
 import shamsiddin.project.tapomessenger.navigation.ScreenType
+import shamsiddin.project.tapomessenger.utils.Firebase
+import shamsiddin.project.tapomessenger.utils.SharedPreferences
 
 @Composable
 fun ChatsScreen(navController: NavController){
-    ChatsView(navController = navController)
+    ChatsView(navController = navController, LocalContext.current)
 }
 @Composable
-fun ChatsView(navController: NavController){
+fun ChatsView(navController: NavController, context: Context){
+    val sharedPreferences = SharedPreferences.getInstance(context)
+    var useres = remember { mutableStateListOf<shamsiddin.project.tapomessenger.model.User>() }
+    var messages = remember { mutableStateListOf<Messages>() }
+
+    Firebase.getChats(sharedPreferences.getUser()[0].key.toString()){users, lastMessage ->
+        useres.clear()
+        messages.clear()
+        useres.addAll(useres)
+        messages.addAll(lastMessage)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -56,7 +76,15 @@ fun ChatsView(navController: NavController){
         ) {
             Row(modifier = Modifier.weight(0.5f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start) {
                 Spacer(modifier = Modifier.width(10.dp))
-                Image(painter = painterResource(id = R.drawable.menu_ic), contentDescription = "", modifier = Modifier.size(35.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.personprofile_example),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(45.dp)
+                        .clip(RoundedCornerShape(50))
+                        .clickable { navController.navigate(ScreenType.Profile.route) },
+                    contentScale = ContentScale.Crop
+                )
             }
             Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                 Text(text = "TapoMessenger", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
@@ -69,11 +97,11 @@ fun ChatsView(navController: NavController){
 
             }
         Spacer(modifier = Modifier.height(10.dp))
-        val arr = mutableListOf<Int>(R.drawable.personprofile_example,R.drawable.personprofile_example,R.drawable.personprofile_example,R.drawable.personprofile_example,R.drawable.personprofile_example,R.drawable.personprofile_example,R.drawable.personprofile_example)
-        LazyColumn(modifier = Modifier){
-            items(arr.size){index ->
-                arr[index]
-                ChatItem(int = arr[index])
+        if (useres.isNotEmpty()){
+            LazyColumn(modifier = Modifier){
+                items(useres.size){
+                    ChatItem(user = useres[it], messages = messages[it])
+                }
             }
         }
 
@@ -81,7 +109,7 @@ fun ChatsView(navController: NavController){
 }
 
 @Composable
-fun ChatItem(int: Int){
+fun ChatItem(user: shamsiddin.project.tapomessenger.model.User, messages: Messages){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -91,7 +119,7 @@ fun ChatItem(int: Int){
     ) {
         Spacer(modifier = Modifier.width(10.dp))
         Image(
-            painter = painterResource(id = int),
+            painter = painterResource(id = R.drawable.personprofile_example),
             contentDescription = "",
             modifier = Modifier
                 .size(55.dp)
@@ -100,11 +128,10 @@ fun ChatItem(int: Int){
         )
         Spacer(modifier = Modifier.width(5.dp))
         Column(verticalArrangement = Arrangement.Center) {
-            Text(text = "Dilmurod Yo'ldoshev", color = Color.Black, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier
+            Text(text = user.fullName.toString(), color = Color.Black, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp, 0.dp, 20.dp, 0.dp))
-            Spacer(modifier = Modifier.height(5.dp))
-            Text(text = "Manga shu ishlarni qilib ber", color = Color.Gray, modifier = Modifier
+            Text(text = messages.message.toString(), color = Color.Gray, modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp, 0.dp, 20.dp, 0.dp), fontSize = 16.sp, maxLines = 1)
         }
@@ -114,7 +141,7 @@ fun ChatItem(int: Int){
 @Composable
 @Preview
 fun ChartsPreview(){
-    ChatsView(navController = rememberNavController())
+    ChatsView(navController = rememberNavController(), LocalContext.current)
 }
 
 

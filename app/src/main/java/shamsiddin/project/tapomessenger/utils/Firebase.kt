@@ -99,23 +99,34 @@ class Firebase private constructor(){
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val allMessages = mutableListOf<Messages>()
                     val allUsers = mutableListOf<User>()
-                    val lastMessage = mutableListOf<Messages>()
                     val allKeys = mutableListOf<String>()
+                    val lastMessage = mutableListOf<Messages>()
+
                     snapshot.children.forEach {
                         val message = it.getValue(Messages::class.java)
                         allMessages.add(message!!)
                     }
-                    if (allMessages.isEmpty()) callback(allUsers, lastMessage)
-                    allMessages.sortByDescending { it.date }
-                    allMessages.forEach {
-                        val userKey = if (it.from == key) it.to else it.from
-                        if (!allKeys.contains(it.key)){
-                            allKeys.add(userKey!!)
-                            lastMessage.add(it)
-                        }
-                    }
-                    allKeys.forEach {
 
+                    if (allMessages.isNotEmpty()){
+                        allMessages.sortByDescending { it.date }
+                        allMessages.forEach {
+                            val userKey = if (it.from == key) it.to else it.from
+                            if (!allKeys.contains(userKey)){
+                                allKeys.add(userKey!!)
+                                lastMessage.add(it)
+                            }
+                        }
+                        allKeys.forEach {
+                            getUser(it){user ->
+                                allUsers.add(user)
+                                if (allKeys.size == allUsers.size){
+                                    callback(allUsers, lastMessage)
+                                }
+                            }
+                        }
+                    }else{
+                        Log.d("getChats", "onDataChange: Empty")
+                        callback(allUsers, lastMessage)
                     }
                 }
 
@@ -124,6 +135,34 @@ class Firebase private constructor(){
                 }
 
             })
+        }
+
+        fun getUser(key: String, callback: (User) -> Unit){
+            users.child(key).addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.getValue(User::class.java) != null){
+                        callback(snapshot.getValue(User::class.java)!!)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("getUser", "onCancelled: $error")
+                }
+
+            })
+        }
+
+        fun sendMessage(text: String, to: String, from: String){
+
+        }
+
+        fun updateUser(key: String, user: User, callback: (Boolean) -> Unit){
+            users.child(key).child("username").setValue(user.username)
+            users.child(key).child("email").setValue(user.email)
+            users.child(key).child("fullName").setValue(user.fullName)
+            users.child(key).child("password").setValue(user.password)
+            users.child(key).child("image").setValue(user.image)
+            callback(true)
         }
 
     }

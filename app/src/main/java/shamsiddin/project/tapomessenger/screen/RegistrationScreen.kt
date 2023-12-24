@@ -40,7 +40,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,7 +49,6 @@ import shamsiddin.project.tapomessenger.R
 import shamsiddin.project.tapomessenger.model.User
 import shamsiddin.project.tapomessenger.navigation.ScreenType
 import shamsiddin.project.tapomessenger.utils.Firebase
-import shamsiddin.project.tapomessenger.utils.SharedPreferences
 
 @Composable
 fun RegistrationScreen(navController: NavController){
@@ -95,14 +93,15 @@ fun RegistrationView(navController: NavController, context: Context){
                 value = name,
                 onValueChange = {
                     name = it.trim()
-                    if (it.length < 6){
-                        nameError = true
-                    } },
-                isError = name.length >= 6,
-                supportingText = {
-                    if (nameError){
-                        Text(text = "Limit $name/${6}", color = Color.Red, modifier = Modifier.fillMaxWidth())
-                    } },
+//                    if (it.length < 6){
+//                        nameError = true
+//                    }
+          },
+//                isError = name.length >= 6,
+//                supportingText = {
+//                    if (nameError){
+//                        Text(text = "Limit $name/${6}", color = Color.Red, modifier = Modifier.fillMaxWidth())
+//                    } },
                 label = { Text(text = "Full name") },
                 modifier = Modifier
                     .fillMaxWidth()
