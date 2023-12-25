@@ -1,11 +1,11 @@
 package shamsiddin.project.tapomessenger.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import shamsiddin.project.tapomessenger.screen.ChatsScreen
 import shamsiddin.project.tapomessenger.screen.CommunicationScreen
 import shamsiddin.project.tapomessenger.screen.ContactsScreen
@@ -32,8 +32,12 @@ fun SetNavGraph(navController: NavHostController){
         composable(ScreenType.Contacts.route){
             ContactsScreen(navController = navController)
         }
-        composable(ScreenType.Communication.route){
-            CommunicationScreen(navController = navController)
+        composable(ScreenType.Communication.route, arguments = listOf(
+            navArgument("key"){
+                type = NavType.StringType
+            }
+        )){
+            CommunicationScreen(navController = navController, it.arguments?.getString("key")!!)
         }
         composable(ScreenType.Profile.route){
             ProfileScreen(navController = navController)

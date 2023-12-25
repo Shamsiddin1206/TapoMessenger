@@ -9,12 +9,14 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import shamsiddin.project.tapomessenger.model.Messages
 import shamsiddin.project.tapomessenger.model.User
+import java.text.SimpleDateFormat
+import java.util.Date
 
-class Firebase private constructor(){
-    companion object{
+class Firebase private constructor() {
+    companion object {
         private val users = FirebaseDatabase.getInstance().reference.child("users")
 
-        fun signup(user: User, context: Context, callback: (Boolean) -> Unit){
+        fun signup(user: User, context: Context, callback: (Boolean) -> Unit) {
             val sharedPreferences = SharedPreferences.getInstance(context)
             val mutableList = mutableListOf<User>()
             val key = users.push().key.toString()
@@ -25,15 +27,15 @@ class Firebase private constructor(){
             callback(true)
         }
 
-        fun checkUsername(username: String, callback: (Boolean) -> Unit){
-            users.addListenerForSingleValueEvent(object : ValueEventListener{
+        fun checkUsername(username: String, callback: (Boolean) -> Unit) {
+            users.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(p0: DataSnapshot) {
-                    if (p0.children.toMutableList().isEmpty()){
+                    if (p0.children.toMutableList().isEmpty()) {
                         callback(true)
-                    }else{
+                    } else {
                         p0.children.forEach {
                             val user = it.getValue(User::class.java)
-                            if (username == user!!.username){
+                            if (username == user!!.username) {
                                 callback(false)
                                 return
                             }
@@ -50,14 +52,19 @@ class Firebase private constructor(){
         }
 
 
-        fun signIn(username: String, password: String, context: Context, callback: (Boolean) -> Unit){
+        fun signIn(
+            username: String,
+            password: String,
+            context: Context,
+            callback: (Boolean) -> Unit
+        ) {
             val sharedPreferences = SharedPreferences.getInstance(context)
             val mutableList = mutableListOf<User>()
-            users.addListenerForSingleValueEvent(object : ValueEventListener{
+            users.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(p0: DataSnapshot) {
                     p0.children.forEach {
                         val user = it.getValue(User::class.java)
-                        if (username == user!!.username && password == user.password){
+                        if (username == user!!.username && password == user.password) {
                             mutableList.add(user)
                             sharedPreferences.setUser(mutableList)
                             Toast.makeText(context, "Successful", Toast.LENGTH_SHORT).show()
@@ -76,8 +83,8 @@ class Firebase private constructor(){
             })
         }
 
-        fun getAllUsers(callback: (MutableList<User>) -> Unit){
-            users.addListenerForSingleValueEvent(object : ValueEventListener{
+        fun getAllUsers(callback: (MutableList<User>) -> Unit) {
+            users.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val mutableList = mutableListOf<User>()
                     snapshot.children.forEach {
@@ -93,9 +100,12 @@ class Firebase private constructor(){
             })
         }
 
-        fun getChats(key: String, callback: (users: MutableList<User>, lastMessage: MutableList<Messages>) -> Unit){
+        fun getChats(
+            key: String,
+            callback: (users: MutableList<User>, lastMessage: MutableList<Messages>) -> Unit
+        ) {
             val userMessages = users.child(key).child("messages")
-            userMessages.addValueEventListener(object : ValueEventListener{
+            userMessages.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val allMessages = mutableListOf<Messages>()
                     val allUsers = mutableListOf<User>()
@@ -107,24 +117,24 @@ class Firebase private constructor(){
                         allMessages.add(message!!)
                     }
 
-                    if (allMessages.isNotEmpty()){
+                    if (allMessages.isNotEmpty()) {
                         allMessages.sortByDescending { it.date }
                         allMessages.forEach {
                             val userKey = if (it.from == key) it.to else it.from
-                            if (!allKeys.contains(userKey)){
+                            if (!allKeys.contains(userKey)) {
                                 allKeys.add(userKey!!)
                                 lastMessage.add(it)
                             }
                         }
                         allKeys.forEach {
-                            getUser(it){user ->
+                            getUser(it) { user ->
                                 allUsers.add(user)
-                                if (allKeys.size == allUsers.size){
+                                if (allKeys.size == allUsers.size) {
                                     callback(allUsers, lastMessage)
                                 }
                             }
                         }
-                    }else{
+                    } else {
                         Log.d("getChats", "onDataChange: Empty")
                         callback(allUsers, lastMessage)
                     }
@@ -137,10 +147,10 @@ class Firebase private constructor(){
             })
         }
 
-        fun getUser(key: String, callback: (User) -> Unit){
-            users.child(key).addListenerForSingleValueEvent(object : ValueEventListener{
+        fun getUser(key: String, callback: (User) -> Unit) {
+            users.child(key).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.getValue(User::class.java) != null){
+                    if (snapshot.getValue(User::class.java) != null) {
                         callback(snapshot.getValue(User::class.java)!!)
                     }
                 }
@@ -152,11 +162,48 @@ class Firebase private constructor(){
             })
         }
 
-        fun sendMessage(text: String, to: String, from: String){
+        fun sendMessage(text: String, to: String, from: String, context: Context) {
+            val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+            val currentDate = sdf.format(Date())
+            val currentUser = SharedPreferences.getInstance(context).getUser()[0].key!!
 
+            val key = FirebaseDatabase.getInstance().reference.push().key.toString()
+            val message =
+                Messages(to = to, from = currentUser, message = text, date = currentDate, key = key)
+            users.child(to).child("messages").child(key).setValue(message)
+            users.child(currentUser).child("messages").child(key).setValue(message)
         }
 
-        fun updateUser(key: String, user: User, callback: (Boolean) -> Unit){
+        fun getMessages(
+            context: Context,
+            userKey: String,
+            callback: (List<Messages>) -> Unit
+        ) {
+            val key = SharedPreferences.getInstance(context).getUser()[0].key!!
+            users.child(key).child("messages")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val m = snapshot.children
+                        val messages = mutableListOf<Messages>()
+                        m.forEach {
+                            val message = it.getValue(Messages::class.java)!!
+                            if (message.from == userKey || message.to == userKey) messages.add(
+                                message
+                            )
+                        }
+                        messages.sortByDescending { it.date }
+                        messages.reverse()
+                        callback(messages)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                })
+        }
+
+
+        fun updateUser(key: String, user: User, callback: (Boolean) -> Unit) {
             users.child(key).child("username").setValue(user.username)
             users.child(key).child("email").setValue(user.email)
             users.child(key).child("fullName").setValue(user.fullName)

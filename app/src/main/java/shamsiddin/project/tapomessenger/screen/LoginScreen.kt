@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -103,7 +104,7 @@ fun LoginView(navController: NavController, context: Context){
                     .fillMaxWidth()
                     .height(60.dp),
                 maxLines = 1,
-                leadingIcon = { Icon(Icons.Outlined.Email, contentDescription = "")}
+                leadingIcon = { Icon(Icons.Outlined.Person, contentDescription = "")}
             )
             Spacer(modifier = Modifier.height(5.dp))
             OutlinedTextField(

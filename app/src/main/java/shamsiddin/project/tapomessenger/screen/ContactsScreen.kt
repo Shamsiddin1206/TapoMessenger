@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.android.material.search.SearchBar
 import shamsiddin.project.tapomessenger.R
 import shamsiddin.project.tapomessenger.model.User
 import shamsiddin.project.tapomessenger.navigation.ScreenType
@@ -190,7 +191,7 @@ fun ContactItem(user: User, navController: NavController){
     Row(modifier = Modifier
         .fillMaxWidth()
         .height(60.dp)
-        .clickable { navController.navigate(ScreenType.Communication.route) }
+        .clickable { navController.navigate("communication_screen" + "/${user.key!!}") }
     ) {
         Spacer(modifier = Modifier.width(10.dp))
         Image(

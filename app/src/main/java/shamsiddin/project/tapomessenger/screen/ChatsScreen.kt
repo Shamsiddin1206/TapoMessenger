@@ -1,6 +1,7 @@
 package shamsiddin.project.tapomessenger.screen
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -52,14 +53,15 @@ fun ChatsScreen(navController: NavController){
 @Composable
 fun ChatsView(navController: NavController, context: Context){
     val sharedPreferences = SharedPreferences.getInstance(context)
-    var useres = remember { mutableStateListOf<shamsiddin.project.tapomessenger.model.User>() }
-    var messages = remember { mutableStateListOf<Messages>() }
+    val useres = remember { mutableStateListOf<shamsiddin.project.tapomessenger.model.User>() }
+    val messages = remember { mutableStateListOf<Messages>() }
 
     Firebase.getChats(sharedPreferences.getUser()[0].key.toString()){users, lastMessage ->
         useres.clear()
         messages.clear()
-        useres.addAll(useres)
+        useres.addAll(users)
         messages.addAll(lastMessage)
+        Log.d("TAG", useres.size.toString())
     }
 
     Column(
@@ -100,7 +102,7 @@ fun ChatsView(navController: NavController, context: Context){
         if (useres.isNotEmpty()){
             LazyColumn(modifier = Modifier){
                 items(useres.size){
-                    ChatItem(user = useres[it], messages = messages[it])
+                    ChatItem(user = useres[it], messages = messages[it], navController)
                 }
             }
         }
@@ -109,12 +111,12 @@ fun ChatsView(navController: NavController, context: Context){
 }
 
 @Composable
-fun ChatItem(user: shamsiddin.project.tapomessenger.model.User, messages: Messages){
+fun ChatItem(user: shamsiddin.project.tapomessenger.model.User, messages: Messages, navController: NavController){
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
-            .padding(5.dp),
+            .clickable { navController.navigate("communication_screen" + "/${user.key!!}") },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.width(10.dp))
