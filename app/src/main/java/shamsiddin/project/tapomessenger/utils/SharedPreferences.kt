@@ -32,5 +32,9 @@ class SharedPreferences private constructor(context: Context){
         return gson.fromJson(data, typeToken)
     }
 
+    fun logOut() {
+        edit.remove("userData").apply()
+    }
+
 
 }

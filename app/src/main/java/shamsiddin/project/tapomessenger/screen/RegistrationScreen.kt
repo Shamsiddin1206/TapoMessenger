@@ -49,6 +49,7 @@ import shamsiddin.project.tapomessenger.R
 import shamsiddin.project.tapomessenger.model.User
 import shamsiddin.project.tapomessenger.navigation.ScreenType
 import shamsiddin.project.tapomessenger.utils.Firebase
+import shamsiddin.project.tapomessenger.utils.SharedPreferences
 
 @Composable
 fun RegistrationScreen(navController: NavController){
@@ -158,6 +159,8 @@ fun RegistrationView(navController: NavController, context: Context){
                                 firebase.signup(User(username = username, fullName = name, email = email, password = password, image = "", key = ""), context){
                                     if (it){
                                         Toast.makeText(context, "Successfully registered", Toast.LENGTH_SHORT).show()
+                                        val shared = SharedPreferences.getInstance(context)
+                                        shared.setUser(mutableListOf(User("", name, "", username, password, email)) )
                                         navController.navigate(ScreenType.Chats.route)
                                     }else{
                                         Log.d("Sign Up failed", "failed")

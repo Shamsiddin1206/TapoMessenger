@@ -41,7 +41,7 @@ fun SplashScreen(navController: NavController){
         delay(4000)
         navController.popBackStack()
         if (sharedPreferences.getUser().isEmpty()){
-            navController.navigate(ScreenType.Registration.route)
+            navController.navigate(ScreenType.Login.route)
         }else{
             navController.navigate(ScreenType.Chats.route)
         }

@@ -63,6 +63,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import shamsiddin.project.tapomessenger.R
 import shamsiddin.project.tapomessenger.navigation.ScreenType
 import shamsiddin.project.tapomessenger.utils.Firebase
+import shamsiddin.project.tapomessenger.utils.SharedPreferences
 
 @Composable
 fun LoginScreen(navController: NavController){
@@ -99,7 +100,7 @@ fun LoginView(navController: NavController, context: Context){
             OutlinedTextField(
                 value = username,
                 onValueChange = {username = it},
-                label = { Text(text = "Email Address")},
+                label = { Text(text = "Username")},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp),
@@ -117,8 +118,8 @@ fun LoginView(navController: NavController, context: Context){
                 maxLines = 1,
                 leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = "")}
             )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(text = "Forgot password?", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End, fontWeight = FontWeight.Bold, color = Color(android.graphics.Color.parseColor("#33BDE6")))
+//            Spacer(modifier = Modifier.height(10.dp))
+//            Text(text = "Forgot password?", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End, fontWeight = FontWeight.Bold, color = Color(android.graphics.Color.parseColor("#33BDE6")))
 
 
         }
